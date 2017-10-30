@@ -2,8 +2,7 @@ library(tidyverse)
 library(caret)
 library(MLmetrics)
 library(RColorBrewer)
-library(grid)
-library(gridExtra)
+library(ggplot2)
 # Package for easy timing in R
 library(tictoc)
 
@@ -44,6 +43,7 @@ runtime_dataframe
 
 
 # Time knn here -----------------------------------------------------------
+#Timing k and n
 runtime_df <- matrix(0,2000,3)
 for(i in 1:500){
   n = 1000*i
@@ -63,12 +63,13 @@ for(i in 1:500){
 runtime_df <- as.data.frame(runtime_df)
 runtime_df <- runtime_df %>% rename(n = V1, k = V2, time = V3)
 write_csv(runtime_df, "results.csv")
+#Timing number of inputs, d
 
 # Plot your results ---------------------------------------------------------
 # Think of creative ways to improve this barebones plot. Note: you don't have to
 # necessarily use geom_point
 runtime_plot <- ggplot(runtime_df, aes(x=n, y=time)) +
-  geom_point(aes(color = k))
+  geom_point(aes(color = k)) + ggtitle("Comparing runtime to k and n for knn")
 runtime_plot
 
 plot2 <- ggplot(runtime_df, aes(x=k, y=time)) + geom_point()
@@ -77,10 +78,7 @@ plot2
 plot3 <- ggplot(runtime_df, aes(x=n, y=time)) +geom_point()
 plot3
 
-ggsave(filename="jennifer_halbleib.png", plot = "runtime_plot", width=16, height = 9)
-
-
-
+ggsave(filename="jennifer_halbleib.png", plot = runtime_plot, width=16, height = 9)
 
 # Runtime complexity ------------------------------------------------------
 # Can you write out the rough Big-O runtime algorithmic complexity as a function
@@ -90,6 +88,6 @@ ggsave(filename="jennifer_halbleib.png", plot = "runtime_plot", width=16, height
 # -k: number of neighbors to consider
 # O(1)
 # -d: number of predictors used? In this case d is fixed at 3
-# O()
+# O(d)
 
 
