@@ -1,6 +1,9 @@
 library(tidyverse)
 library(caret)
-
+library(MLmetrics)
+library(RColorBrewer)
+library(grid)
+library(gridExtra)
 # Package for easy timing in R
 library(tictoc)
 
@@ -40,21 +43,41 @@ runtime_dataframe <- expand.grid(n_values, k_values) %>%
 runtime_dataframe
 
 
-
-
 # Time knn here -----------------------------------------------------------
+runtime_df <- matrix(0,2000,3)
+for(i in 1:500){
+  n = 1000*i
+  loopcounter = i*4-4
+  sample_train <- train %>% slice(1:n)
+  k_values = c(2,10,100,1000,10000)
+  for(j in 1:4){
+    tic()
+    model_knn <- caret::knn3(model_formula, data= sample_train, k = k_values[j])
+    tim <- toc()
+    runtime_df[loopcounter + j,1] <- n
+    runtime_df[loopcounter + j,2] <- k_values[j]
+    runtime_df[loopcounter + j,3] <- tim$toc - tim$tic
+  }
+}
 
-
-
+runtime_df <- as.data.frame(runtime_df)
+runtime_df <- runtime_df %>% rename(n = V1, k = V2, time = V3)
+write_csv(runtime_df, "results.csv")
 
 # Plot your results ---------------------------------------------------------
 # Think of creative ways to improve this barebones plot. Note: you don't have to
 # necessarily use geom_point
-runtime_plot <- ggplot(runtime_dataframe, aes(x=n, y=k, col=runtime)) +
-  geom_point()
-
+runtime_plot <- ggplot(runtime_df, aes(x=n, y=time)) +
+  geom_point(aes(color = k))
 runtime_plot
-ggsave(filename="firstname_lastname.png", width=16, height = 9)
+
+plot2 <- ggplot(runtime_df, aes(x=k, y=time)) + geom_point()
+plot2
+
+plot3 <- ggplot(runtime_df, aes(x=n, y=time)) +geom_point()
+plot3
+
+ggsave(filename="jennifer_halbleib.png", plot = "runtime_plot", width=16, height = 9)
 
 
 
@@ -63,7 +86,10 @@ ggsave(filename="firstname_lastname.png", width=16, height = 9)
 # Can you write out the rough Big-O runtime algorithmic complexity as a function
 # of:
 # -n: number of points in training set
+# O(n)
 # -k: number of neighbors to consider
+# O(1)
 # -d: number of predictors used? In this case d is fixed at 3
+# O()
 
 
