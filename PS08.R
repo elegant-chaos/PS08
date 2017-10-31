@@ -1,8 +1,6 @@
 library(tidyverse)
 library(caret)
 library(MLmetrics)
-library(RColorBrewer)
-library(ggplot2)
 # Package for easy timing in R
 library(tictoc)
 
@@ -43,7 +41,6 @@ runtime_dataframe
 
 
 # Time knn here -----------------------------------------------------------
-#Timing k and n
 runtime_df <- matrix(0,2000,3)
 for(i in 1:500){
   n = 1000*i
@@ -63,7 +60,6 @@ for(i in 1:500){
 runtime_df <- as.data.frame(runtime_df)
 runtime_df <- runtime_df %>% rename(n = V1, k = V2, time = V3)
 write_csv(runtime_df, "results.csv")
-#Timing number of inputs, d
 
 # Plot your results ---------------------------------------------------------
 # Think of creative ways to improve this barebones plot. Note: you don't have to
@@ -88,6 +84,6 @@ ggsave(filename="jennifer_halbleib.png", plot = runtime_plot, width=16, height =
 # -k: number of neighbors to consider
 # O(1)
 # -d: number of predictors used? In this case d is fixed at 3
-# O(d)
+# O(d*n) so potentially exponential if d = n
 
 
