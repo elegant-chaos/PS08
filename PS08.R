@@ -91,12 +91,11 @@ ggsave(filename="jennifer_halbleib.png", plot = runtime_plot, width=16, height =
 # happens only once in the algorithm, so the contribution of n to runtime is linear.
 # O(n)
 # -k: number of neighbors to consider
-# Based on the data, k does not seem to significant impact runtime, so the contribution
+# Based on the data, k does not seem to significantly impact runtime, so the contribution
 # of k to runtime is constant.
 # O(1)
 # -d: number of predictors used? In this case d is fixed at 3
-# While d is fixed in this case, my case is the algorithm works via some type of 
+# While d is fixed in this case, my guess is the algorithm works via some type of 
 # matrix traversal. So, I imagine d's contribution to runtime is also linear. This means
 # that, overall, the likely worst case scenario is exponential runtime, when d = n.
-# O(d*n) so potentially exponential if d = n
-
+# O(d*n)
